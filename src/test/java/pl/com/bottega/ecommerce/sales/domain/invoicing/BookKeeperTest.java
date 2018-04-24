@@ -4,6 +4,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Date;
@@ -47,5 +49,16 @@ public class BookKeeperTest {
         invoiceRequest.add(requestItem);
         Invoice invoice = bookKeeper.issuance(invoiceRequest, mockedTaxPolicy);
         assertThat(invoice.getItems().size(), is(equalTo(1)));
+    }
+
+    @Test
+    public void invoiceWithTwoItemsShouldUseCalculateTaxMethodTwoTimes() {
+        when(mockedTaxPolicy.calculateTax(productData.getType(), productData.getPrice()))
+                .thenReturn(new Tax(new Money(0.50), "Item Tax"));
+        RequestItem requestItem = new RequestItem(productData, 5, productData.getPrice());
+        invoiceRequest.add(requestItem);
+        invoiceRequest.add(requestItem);
+        bookKeeper.issuance(invoiceRequest, mockedTaxPolicy);
+        verify(mockedTaxPolicy, times(2)).calculateTax(productData.getType(), productData.getPrice());
     }
 }
