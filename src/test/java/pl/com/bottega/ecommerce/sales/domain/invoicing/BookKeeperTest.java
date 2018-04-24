@@ -2,6 +2,7 @@ package pl.com.bottega.ecommerce.sales.domain.invoicing;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -30,6 +31,7 @@ public class BookKeeperTest {
     private TaxPolicy mockedTaxPolicy;
     private InvoiceRequest invoiceRequest;
     private ProductData productData;
+    private ProductData anotherProductData;
 
     @Before
     public void setUp() throws Exception {
@@ -39,6 +41,7 @@ public class BookKeeperTest {
         Money moneyEUR = new Money(125.0);
         Date snapshotDate = new Date();
         productData = new ProductData(Id.generate(), moneyEUR, "Ziemniak", ProductType.FOOD, snapshotDate);
+        anotherProductData = new ProductData(Id.generate(), moneyEUR, "Seler", ProductType.FOOD, snapshotDate);
     }
 
     @Test
@@ -60,5 +63,19 @@ public class BookKeeperTest {
         invoiceRequest.add(requestItem);
         bookKeeper.issuance(invoiceRequest, mockedTaxPolicy);
         verify(mockedTaxPolicy, times(2)).calculateTax(productData.getType(), productData.getPrice());
+    }
+
+    @Test
+    public void invoiceRequestWithTwoItemsShouldReturnInvoiceWithTwoDifferentItems() {
+        when(mockedTaxPolicy.calculateTax(productData.getType(), productData.getPrice()))
+                .thenReturn(new Tax(new Money(0.50), "Item Tax"));
+        when(mockedTaxPolicy.calculateTax(anotherProductData.getType(), anotherProductData.getPrice()))
+                .thenReturn(new Tax(new Money(0.75), "Item Tax"));
+        RequestItem requestItem = new RequestItem(productData, 5, productData.getPrice());
+        invoiceRequest.add(requestItem);
+        requestItem = new RequestItem(anotherProductData, 4, anotherProductData.getPrice());
+        invoiceRequest.add(requestItem);
+        Invoice invoice = bookKeeper.issuance(invoiceRequest, mockedTaxPolicy);
+        assertThat(invoice.getItems().get(0).getProduct(), is(not(invoice.getItems().get(1).getProduct())));
     }
 }
