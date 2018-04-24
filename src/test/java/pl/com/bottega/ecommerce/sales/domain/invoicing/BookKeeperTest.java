@@ -27,7 +27,6 @@ import pl.com.bottega.ecommerce.sharedkernel.Money;
 public class BookKeeperTest {
 
     private BookKeeper bookKeeper;
-    private InvoiceFactory invoiceFactory;
     private TaxPolicy mockedTaxPolicy;
     private InvoiceRequest invoiceRequest;
     private ProductData productData;
@@ -77,5 +76,13 @@ public class BookKeeperTest {
         invoiceRequest.add(requestItem);
         Invoice invoice = bookKeeper.issuance(invoiceRequest, mockedTaxPolicy);
         assertThat(invoice.getItems().get(0).getProduct(), is(not(invoice.getItems().get(1).getProduct())));
+    }
+
+    @Test
+    public void invoiceRequestWithoutItemsShouldNotUseCalculateTaxMethod() {
+        when(mockedTaxPolicy.calculateTax(productData.getType(), productData.getPrice()))
+                .thenReturn(new Tax(new Money(5), "Item Tax"));
+        bookKeeper.issuance(invoiceRequest, mockedTaxPolicy);
+        verify(mockedTaxPolicy, times(0)).calculateTax(productData.getType(), productData.getPrice());
     }
 }
