@@ -16,7 +16,7 @@ public class Product extends BaseAggregateRoot {
 
     private Product() {}
 
-    public Product(Id aggregateId, Money price, String name, ProductType productType) {
+    Product(Id aggregateId, Money price, String name, ProductType productType) {
         this.id = aggregateId;
         this.price = price;
         this.name = name;

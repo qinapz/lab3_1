@@ -32,7 +32,7 @@ public class Reservation extends BaseAggregateRoot {
     @SuppressWarnings("unused")
     private Reservation() {}
 
-    public Reservation(Id aggregateId, ReservationStatus status, ClientData clientData, Date createDate) {
+    Reservation(Id aggregateId, ReservationStatus status, ClientData clientData, Date createDate) {
         this.id = aggregateId;
         this.status = status;
         this.clientData = clientData;
@@ -60,7 +60,7 @@ public class Reservation extends BaseAggregateRoot {
      * Higher order function closured by policy function</br>
      * </br>
      * Function loads current prices, and prepares offer according to the current availability and given discount
-     * 
+     *
      * @param discountPolicy
      * @return
      */

@@ -19,7 +19,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.ClientData;
 import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.Id;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductData;
-import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductType;
+import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductDataBuilder;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -31,6 +31,7 @@ public class BookKeeperTest {
     private InvoiceRequest invoiceRequest;
     private ProductData productData;
     private ProductData anotherProductData;
+    private ProductDataBuilder productDataBuilder = new ProductDataBuilder();
 
     @Before
     public void setUp() throws Exception {
@@ -39,8 +40,8 @@ public class BookKeeperTest {
         invoiceRequest = new InvoiceRequest(new ClientData(Id.generate(), "John Doe"));
         Money moneyEUR = new Money(125.0);
         Date snapshotDate = new Date();
-        productData = new ProductData(Id.generate(), moneyEUR, "Ziemniak", ProductType.FOOD, snapshotDate);
-        anotherProductData = new ProductData(Id.generate(), moneyEUR, "Seler", ProductType.FOOD, snapshotDate);
+        productData = new ProductDataBuilder().withName("Kartofel").build();
+        anotherProductData = new ProductDataBuilder().withName("Marchewka").build();
     }
 
     @Test

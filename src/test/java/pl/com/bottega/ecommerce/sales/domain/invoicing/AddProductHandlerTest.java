@@ -24,8 +24,10 @@ import pl.com.bottega.ecommerce.sales.domain.client.Client;
 import pl.com.bottega.ecommerce.sales.domain.client.ClientRepository;
 import pl.com.bottega.ecommerce.sales.domain.equivalent.SuggestionService;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.Product;
+import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductBuilder;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductRepository;
 import pl.com.bottega.ecommerce.sales.domain.reservation.Reservation;
+import pl.com.bottega.ecommerce.sales.domain.reservation.ReservationBuilder;
 import pl.com.bottega.ecommerce.sales.domain.reservation.ReservationRepository;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -51,11 +53,13 @@ public class AddProductHandlerTest {
         mockedSuggestionService = mock(SuggestionService.class);
         mockedClientRepository = mock(ClientRepository.class);
         addProductCommandHandler = new AddProductCommandHandler();
+        availableProduct = new ProductBuilder().withName("Kalafior").build();
+        unavailableProduct = new ProductBuilder().withName("Por").build();
         addProductCommand = new AddProductCommand(Id.generate(), Id.generate(), 1);
         client = new Client();
         date = new Date();
         clientData = new ClientData(Id.generate(), "John Doe");
-        reservation = new Reservation(Id.generate(), Reservation.ReservationStatus.OPENED, clientData, new Date());
+        reservation = new ReservationBuilder().build();
 
         Whitebox.setInternalState(addProductCommandHandler, "reservationRepository", mockedReservationRepository);
         Whitebox.setInternalState(addProductCommandHandler, "productRepository", mockedProductRepository);
