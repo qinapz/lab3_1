@@ -83,17 +83,10 @@ public class AddProductHandlerTest {
     }
 
     @Test
-    public void handleForAvailableProductShouldNotInvokeLoadMethodOfSuggestionService() {
+    public void handlerForAvailableProductShouldNotInvokeLoadMethodOfSuggestionService() {
         when(mockedProductRepository.load(Mockito.<Id> any())).thenReturn(availableProduct);
         addProductCommandHandler.handle(addProductCommand);
         verify(mockedSuggestionService, times(0)).suggestEquivalent(Mockito.<Product> any(), Mockito.<Client> any());
-    }
-
-    @Test
-    public void handleForNonAvailableProductShouldInvokeLoadMethodOfSuggestionServiceOnce() {
-        when(mockedProductRepository.load(Mockito.<Id> any())).thenReturn(unavailableProduct);
-        addProductCommandHandler.handle(addProductCommand);
-        verify(mockedSuggestionService, times(1)).suggestEquivalent(Mockito.<Product> any(), Mockito.<Client> any());
     }
 
     @Test
@@ -104,7 +97,7 @@ public class AddProductHandlerTest {
     }
 
     @Test
-    public void handleShouldInvokeSaveMethodOfReservationRepositoryOnce() {
+    public void handlerShouldInvokeSaveMethodOfReservationRepositoryOnce() {
         when(mockedProductRepository.load(Mockito.<Id> any())).thenReturn(availableProduct);
         addProductCommandHandler.handle(addProductCommand);
         verify(mockedReservationRepository, times(1)).save(Mockito.<Reservation> any());
